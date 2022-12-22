@@ -55,6 +55,8 @@ export default function LoginScreen({ navigation }) {
     setState(initialState);
   };
 
+  const onSubmit = () => {};
+
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
       setIsShowKeyboard(true);
@@ -130,7 +132,9 @@ export default function LoginScreen({ navigation }) {
                 activeOpacity={0.6}
                 onPress={keyBoardHide}
               >
-                <Text style={s.text}>Войти</Text>
+                <Text onPress={onSubmit} style={s.text}>
+                  Войти
+                </Text>
               </TouchableOpacity>
               <View style={{ marginTop: 16, alignItems: "center" }}>
                 <Text onPress={() => navigation.navigate("Register")}>
