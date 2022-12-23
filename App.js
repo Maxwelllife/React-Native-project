@@ -1,32 +1,56 @@
 import { StatusBar } from "expo-status-bar";
-import {} from "react-native";
+import { View } from "react-native";
 import * as Font from "expo-font";
-import AppLoading from "expo-app-loading";
+import * as SplashScreen from "expo-splash-screen";
+
 import { NavigationContainer } from "@react-navigation/native";
 import { useRoute } from "./router";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-const loadApplication = async () => {
-  await Font.loadAsync({
-    "Roboto-regular": require("./assets/fonts/Roboto-Regular.ttf"),
-  });
-};
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
+  const routing = useRoute(true);
+
   const [isReady, setIsReady] = useState(false);
 
-  const routing = useRoute(true);
+  useEffect(() => {
+    async function prepare() {
+      try {
+        await Font.loadAsync({
+          // "R-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
+          "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
+          "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
+        });
+        // await Asset.fromModule(
+        //   require("./assets/images/png/PhotoBG.png")
+        // ).downloadAsync();
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setIsReady(true);
+      }
+    }
+    prepare();
+  }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (isReady) {
+      await SplashScreen.hideAsync();
+    }
+  }, [isReady]);
+
   if (!isReady) {
-    <AppLoading
-      startAsync={loadApplication}
-      onFinish={() => setIsReady(true)}
-      onError={() => console.warn}
-    />;
+    return null;
   }
 
   return (
     <NavigationContainer>
-      {routing}
+      <View onLayout={onLayoutRootView} style={{ height: "100%" }}>
+        {routing}
+        {/* {isAuth ? <MainNavigation /> : <AuthNavigation />} */}
+      </View>
+
       <StatusBar style="auto" />
     </NavigationContainer>
   );

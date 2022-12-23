@@ -74,7 +74,7 @@ export default function LoginScreen({ navigation }) {
   return (
     <View style={s.container}>
       <ImageBackground
-        source={require("../../assets/PhotoBG.png")}
+        source={require("../../assets/images/png/PhotoBG.png")}
         style={s.bgImage}
       >
         {/* закрытие клавиатуры когда нажимаем вне формы */}

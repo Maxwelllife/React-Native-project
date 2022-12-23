@@ -74,7 +74,7 @@ export const useRoute = (isAuth) => {
             headerLeft: () => (
               <TouchableOpacity style={s.goBack}>
                 <Image
-                  source={require("./assets/png/Group10.png")}
+                  source={require("./assets/images/png/Group10.png")}
                   size={24}
                   color="black"
                 />
