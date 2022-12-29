@@ -96,6 +96,12 @@ function CreateScreen({ navigation }) {
     });
   };
 
+  const reset = () => {
+    setTitle(null);
+    setPlace(null);
+    setPhoto(null);
+  };
+
   return (
     <View style={s.container}>
       {photo ? (
@@ -185,21 +191,14 @@ function CreateScreen({ navigation }) {
             Опубликовать
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          // style={{
-          //   ...s.basket,
-          //   transform: [{ translateX: (width - 70) / 2 - 16 }],
-          // }}
-          activeOpacity={0.6}
-          onPress={reset}
-        >
-          <MaterialCommunityIcons
-            name="trash-can-outline"
-            size={24}
-            color="black"
-          />
-        </TouchableOpacity>
       </View>
+      <TouchableOpacity style={s.basket} activeOpacity={0.6} onPress={reset}>
+        <MaterialCommunityIcons
+          name="trash-can-outline"
+          size={24}
+          color={photo || title ? "#212121" : "#DADADA"}
+        />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -281,8 +280,6 @@ const s = StyleSheet.create({
     marginHorizontal: 16,
     padding: 16,
     borderRadius: 100,
-    // backgroundColor: "#F6F6F6",
-    // backgroundColor: "#FF6C00",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -290,6 +287,18 @@ const s = StyleSheet.create({
     // color: "#BDBDBD",
     fontSize: 16,
     lineHeight: 19,
+  },
+  basket: {
+    width: 70,
+    alignSelf: "center",
+    alignItems: "center",
+    marginTop: 170,
+    marginBottom: 10,
+    padding: 8,
+    height: 40,
+    // backgroundColor: "#FF6C00",
+    backgroundColor: "#F6F6F6",
+    borderRadius: 20,
   },
 });
 
