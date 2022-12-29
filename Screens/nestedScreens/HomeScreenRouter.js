@@ -1,37 +1,16 @@
 import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { StyleSheet, TouchableOpacity, Image } from "react-native";
 
 import { Feather, AntDesign } from "@expo/vector-icons";
 
-import { StyleSheet, TouchableOpacity, Image } from "react-native";
+import PostScreenRouter from "../mainScreen/PostScreenRouter";
+import CreatePostsScreen from "../mainScreen/CreatePostsScreen";
+import ProfileScreen from "../mainScreen/ProfileScreen";
 
-import RegisterScreen from "./Screens/auth/RegisterScreen";
-import LoginScreen from "./Screens/auth/LoginScreen";
-import PostScreen from "./Screens/mainScreen/PostScreen";
-import CreateScreen from "./Screens/mainScreen/CreateScreen";
-import ProfileScreen from "./Screens/mainScreen/ProfileScreen";
-
-const AuthStack = createStackNavigator();
 const MainTab = createBottomTabNavigator();
 
-export const useRoute = (isAuth) => {
-  if (!isAuth) {
-    return (
-      <AuthStack.Navigator screenOptions={{ headerShown: false }}>
-        <AuthStack.Screen
-          name="Register"
-          component={RegisterScreen}
-          // options={{ headerShown: false }}
-        />
-        <AuthStack.Screen
-          name="Login"
-          component={LoginScreen}
-          // options={{ headerShown: false }}
-        />
-      </AuthStack.Navigator>
-    );
-  }
+function HomeScreenRouter() {
   return (
     <MainTab.Navigator
       screenOptions={{
@@ -41,13 +20,12 @@ export const useRoute = (isAuth) => {
           paddingTop: 10,
           paddingBottom: 20,
           height: 70,
-          // display: "none",
         },
       }}
     >
       <MainTab.Screen
-        name="Posts"
-        component={PostScreen}
+        name="PostsScreen"
+        component={PostScreenRouter}
         options={{
           title: "Публикации",
           headerRight: () => (
@@ -67,14 +45,17 @@ export const useRoute = (isAuth) => {
       />
       <MainTab.Screen
         name="Create"
-        component={CreateScreen}
+        component={CreatePostsScreen}
         options={({ navigation }) => {
           return {
             title: "Создать публикацию",
             headerLeft: () => (
-              <TouchableOpacity style={s.goBack}>
+              <TouchableOpacity
+                style={s.goBack}
+                onPress={() => navigation.navigate("Posts")}
+              >
                 <Image
-                  source={require("./assets/images/png/Group10.png")}
+                  source={require("../../assets/images/png/goBack.png")}
                   size={24}
                   color="black"
                 />
@@ -88,6 +69,7 @@ export const useRoute = (isAuth) => {
             tabBarIcon: ({ focused, size, color }) => (
               <AntDesign name="plus" size={24} color="white" />
             ),
+            tabBarStyle: { display: "none" },
           };
         }}
       />
@@ -111,7 +93,7 @@ export const useRoute = (isAuth) => {
       />
     </MainTab.Navigator>
   );
-};
+}
 
 const s = StyleSheet.create({
   header: {
@@ -127,3 +109,5 @@ const s = StyleSheet.create({
     paddingLeft: 16,
   },
 });
+
+export default HomeScreenRouter;

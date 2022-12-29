@@ -3,14 +3,13 @@ import { View } from "react-native";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 
-import { NavigationContainer } from "@react-navigation/native";
-import { useRoute } from "./router";
+import MainRouter from "./MainRouter";
 import { useCallback, useEffect, useState } from "react";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  const routing = useRoute(true);
+  // const routing = useRoute(true);
 
   const [isReady, setIsReady] = useState(false);
 
@@ -18,7 +17,7 @@ export default function App() {
     async function prepare() {
       try {
         await Font.loadAsync({
-          // "R-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
+          "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
           "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
           "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
         });
@@ -45,13 +44,13 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
+    <>
       <View onLayout={onLayoutRootView} style={{ height: "100%" }}>
-        {routing}
-        {/* {isAuth ? <MainNavigation /> : <AuthNavigation />} */}
+        <MainRouter />
+        {/* {routing} */}
       </View>
 
       <StatusBar style="auto" />
-    </NavigationContainer>
+    </>
   );
 }
