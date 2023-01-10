@@ -9,9 +9,9 @@ const MapScreen = ({ route }) => {
   console.log("MAProute.params: ", route.params);
 
   return (
-    <View style={styles.container}>
+    <View style={s.container}>
       <MapView
-        style={styles.map}
+        style={s.map}
         initialRegion={{
           latitude,
           longitude,
@@ -25,7 +25,7 @@ const MapScreen = ({ route }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const s = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",

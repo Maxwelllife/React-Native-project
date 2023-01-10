@@ -3,14 +3,14 @@ import { View } from "react-native";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 
-import MainRouter from "./MainRouter";
+import MainRouter from "./Components/MainRouter";
 import { useCallback, useEffect, useState } from "react";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  // const routing = useRoute(true);
-
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
@@ -44,13 +44,12 @@ export default function App() {
   }
 
   return (
-    <>
+    <Provider store={store}>
       <View onLayout={onLayoutRootView} style={{ height: "100%" }}>
         <MainRouter />
-        {/* {routing} */}
       </View>
 
       <StatusBar style="auto" />
-    </>
+    </Provider>
   );
 }

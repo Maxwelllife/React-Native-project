@@ -1,8 +1,24 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { getAuthStore } from "../../redux/auth/auth-selectors";
 
 import CameraIcon from "../../Components/CameraIcon";
 import { EvilIcons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Camera, CameraType } from "expo-camera";
+import * as Location from "expo-location";
+
+import { storage, db } from "../../firebase/config";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import {
+  arrayRemove,
+  arrayUnion,
+  deleteDoc,
+  doc,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
+import uuid from "react-native-uuid";
 
 import {
   StyleSheet,
@@ -13,16 +29,14 @@ import {
   TextInput,
   Alert,
 } from "react-native";
-import { Camera, CameraType } from "expo-camera";
-import * as Location from "expo-location";
 
 function CreateScreen({ navigation }) {
+  const { userId, login } = useSelector(getAuthStore);
   const [camera, setCamera] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [title, setTitle] = useState(null);
   const [place, setPlace] = useState(null);
-  // console.log("CreateScreenPlace: ", place);
   const [type, setType] = useState(CameraType.back);
 
   // получение разрешения камеры на локацию - происходит один раз
@@ -59,21 +73,16 @@ function CreateScreen({ navigation }) {
     setPhoto(photo.uri);
 
     const photoLocation = {
-      city: exactLocation[0].city,
-      country: exactLocation[0].country,
+      city: exactLocation[0]?.city || "",
+      country: exactLocation[0]?.country || "",
       longitude: location.coords.longitude,
       latitude: location.coords.latitude,
     };
     setPlace(photoLocation);
   };
 
-  function toggleCameraType() {
-    setType((current) => {
-      // console.log("current: ", current);
-      return current === "back" ? CameraType.front : CameraType.back;
-    });
-  }
   const sendPhoto = () => {
+    sendPostToServer();
     if (!photo) {
       return Alert.alert(
         "Вы не сделали фото!",
@@ -89,13 +98,46 @@ function CreateScreen({ navigation }) {
       );
     }
 
-    navigation.navigate("Posts", {
-      photo,
-      place,
-      title,
-    });
+    navigation.navigate("Posts");
   };
 
+  const sendPostToServer = async () => {
+    const photoURL = await uploadPhotoToServer();
+    // ссылка на коллекцию постов
+    const postsStorageRef = doc(db, `posts`, uuid.v4());
+    console.log("postsStorageRef: ", postsStorageRef);
+    await setDoc(postsStorageRef, {
+      title,
+      userId,
+      login,
+      place,
+      photo: photoURL,
+      // likes: [],
+      // comments: [],
+
+      creationDate: new Date().getTime(),
+    });
+  };
+  const uploadPhotoToServer = async () => {
+    const response = await fetch(photo);
+    const file = await response.blob();
+    const id = uuid.v4();
+    const storageRef = ref(storage, `posts/${id}`);
+    await uploadBytes(storageRef, file).then((snapshot) => {
+      console.log("Uploaded a blob!");
+    });
+    const photoUrl = await getDownloadURL(storageRef).then((snapshot) => {
+      console.log("photoRef:", snapshot); //ссылка которая мне нужна
+      return snapshot;
+    });
+    return photoUrl;
+  };
+
+  function toggleCameraType() {
+    setType((current) => {
+      return current === "back" ? CameraType.front : CameraType.back;
+    });
+  }
   const reset = () => {
     setTitle(null);
     setPlace(null);
@@ -160,15 +202,9 @@ function CreateScreen({ navigation }) {
           />
         </View>
         <View style={{ marginTop: 16 }}>
-          <TextInput
-            style={{ ...s.input, paddingLeft: 32 }}
-            textAlign="left"
-            placeholder="Местность..."
-            value={`${place?.city}, ${place?.country}`}
-            // onChangeText={(place) => {
-            //   setPlace(place.city, place.country);
-            // }}
-          />
+          <Text style={{ ...s.input, paddingLeft: 32 }} textAlign="left">
+            {place ? `${place.city}, ${place.country}` : "Местность..."}
+          </Text>
           <EvilIcons
             style={s.locationIcon}
             name="location"
@@ -183,10 +219,9 @@ function CreateScreen({ navigation }) {
           backgroundColor: photo && title ? "#FF6C00" : "#f6f6f6",
         }}
       >
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity onPress={sendPhoto}>
           <Text
             style={{ ...s.text, color: photo && title ? "#FFF" : "#BDBDBD" }}
-            onPress={sendPhoto}
           >
             Опубликовать
           </Text>

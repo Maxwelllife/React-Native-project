@@ -1,4 +1,9 @@
 import React, { useState, useEffect } from "react";
+
+import { useSelector } from "react-redux";
+import { getAuthStore } from "../../redux/auth/auth-selectors";
+// import { getUser } from "../../redux/auth/auth-selectors";
+// import uuid from "react-native-uuid";
 import {
   StyleSheet,
   View,
@@ -7,22 +12,49 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
+import { db } from "../../firebase/config";
+import { onSnapshot, collection } from "firebase/firestore";
 
 import { Feather, EvilIcons } from "@expo/vector-icons";
 
 function PostScreen({ navigation, route }) {
+  // в dbPost есть свой id из постов
+  const { userId, login, email, avatar } = useSelector(getAuthStore);
+  // const { userId, login, email, avatar } = useSelector(getUser);
+  console.log("userId, login, email: ", userId, login, email);
+  // const id = uuid.v4();
   const [posts, setPosts] = useState([]);
 
-  useEffect(() => {
-    if (route.params) {
-      setPosts((prevState) => [...prevState, route.params]);
-    }
-  }, [route.params]);
+  const postsStorageRef = collection(db, `posts`);
 
-  console.log("posts: ", posts);
+  const getAllPosts = async () => {
+    onSnapshot(postsStorageRef, (data) => {
+      if (data.docs.length) {
+        const dbPosts = data.docs.map((post) => ({
+          ...post.data(),
+          id: post.id,
+        }));
+        console.log("dbPosts: ", dbPosts);
+        setPosts(dbPosts);
+      }
+    });
+  };
+
+  useEffect(() => {
+    getAllPosts();
+  }, []);
+
+  console.log("postsssssssssssssssssssssss: ", posts);
 
   return (
     <View style={s.container}>
+      <View style={s.header}>
+        {avatar ? (
+          <Image style={s.userAvatar} source={{ uri: avatar }} />
+        ) : (
+          <View style={{ ...s.userAvatar, backgroundColor: "#F6F6F6" }}></View>
+        )}
+      </View>
       <FlatList
         data={posts}
         keyExtractor={(item, indx) => indx.toString()}
@@ -45,13 +77,13 @@ function PostScreen({ navigation, route }) {
                 style={s.comments}
                 onPress={() =>
                   navigation.navigate("Comments", {
-                    photo: item.photo,
-                    // post: item.id,
+                    // photo: item.photo,
+                    postId: item.id,
                   })
                 }
               >
                 <Feather name="message-circle" size={24} color="#BDBDBD" />
-                <Text style={s.text}>Длинна массива</Text>
+                <Text style={s.text}>{item.comments?.length}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity

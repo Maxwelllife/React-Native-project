@@ -1,3 +1,6 @@
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+
 import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
@@ -14,7 +17,7 @@ import {
   Image,
 } from "react-native";
 
-import { useState, useEffect } from "react";
+import { register } from "../../redux/auth/auth-operations";
 
 const initialState = {
   login: "",
@@ -28,6 +31,8 @@ export default function RegisterScreen({ navigation }) {
   const [state, setState] = useState(initialState);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(true);
+
+  const dispatch = useDispatch();
 
   const showPassword = () => {
     if (isShowPassword) {
@@ -48,12 +53,14 @@ export default function RegisterScreen({ navigation }) {
   // }, []);
 
   // при скрытии клавы делаем следующее
-  const keyBoardHide = () => {
-    // setIsShowKeyboard(false);
-    Keyboard.dismiss();
-    console.log("register-state", state);
+  const handleSubmit = () => {
+    dispatch(register(state));
     // в стейт записывает начальный пустой
     setState(initialState);
+  };
+
+  const keyboardHide = () => {
+    Keyboard.dismiss();
   };
 
   useEffect(() => {
@@ -77,8 +84,7 @@ export default function RegisterScreen({ navigation }) {
         style={s.bgImage}
       >
         {/* закрытие клавиатуры когда нажимаем вне формы */}
-        <TouchableWithoutFeedback onPress={keyBoardHide}>
-          {/* не работает */}
+        <TouchableWithoutFeedback onPress={keyboardHide}>
           <View
             style={{
               ...s.form,
@@ -151,7 +157,7 @@ export default function RegisterScreen({ navigation }) {
               <TouchableOpacity
                 style={s.btn}
                 activeOpacity={0.6}
-                onPress={keyBoardHide}
+                onPress={handleSubmit}
               >
                 <Text style={s.text}>Зарегистрироваться</Text>
               </TouchableOpacity>
