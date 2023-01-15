@@ -1,30 +1,72 @@
 import React, { useState, useEffect } from "react";
+
+import { useSelector } from "react-redux";
+import { getAuthStore } from "../../redux/auth/auth-selectors";
+// import { getUser } from "../../redux/auth/auth-selectors";
+// import uuid from "react-native-uuid";
 import {
   StyleSheet,
   View,
   Image,
+  SafeAreaView,
   FlatList,
   Text,
   TouchableOpacity,
 } from "react-native";
+import { db } from "../../firebase/config";
+import { onSnapshot, collection, doc } from "firebase/firestore";
 
 import { Feather, EvilIcons } from "@expo/vector-icons";
 
-function PostScreen({ navigation, route }) {
+function PostScreen({ navigation }) {
+  const { userId, login, email, avatarURL } = useSelector(getAuthStore);
+  console.log("Store in POSTSCREEN: ", useSelector(getAuthStore));
+
   const [posts, setPosts] = useState([]);
 
-  useEffect(() => {
-    if (route.params) {
-      setPosts((prevState) => [...prevState, route.params]);
-    }
-  }, [route.params]);
+  const postsStorageRef = collection(db, `posts`);
+  console.log("db: ", db);
 
-  console.log("posts: ", posts);
+  const getAllPosts = async () => {
+    onSnapshot(postsStorageRef, (data) => {
+      if (data.docs.length) {
+        const dbPosts = data.docs.map((post) => ({
+          ...post.data(),
+          id: post.id,
+        }));
+        // console.log("dbPosts: ", dbPosts);
+        setPosts(dbPosts);
+      }
+    });
+  };
+
+  useEffect(() => {
+    getAllPosts();
+  }, []);
+
+  console.log("postsssssssssssssssssssssss: ", posts);
 
   return (
     <View style={s.container}>
+      <View style={{ flexDirection: "row" }}>
+        <Image
+          style={s.userAvatar}
+          source={
+            avatarURL
+              ? { uri: avatarURL }
+              : require("../../assets/images/png/PhotoBG.png")
+          }
+        />
+
+        <View>
+          <Text style={s.text}>{login}</Text>
+          <Text style={{ ...s.text, marginBottom: 10 }}>{email}</Text>
+        </View>
+      </View>
+
       <FlatList
         data={posts}
+        // тут нужен нормальный const id = uuid.v4();
         keyExtractor={(item, indx) => indx.toString()}
         renderItem={({ item }) => (
           <View
@@ -33,7 +75,7 @@ function PostScreen({ navigation, route }) {
             }}
           >
             <Image
-              style={{ width: "100%", height: 240, borderRadius: 8 }}
+              style={s.image}
               resizeMode="cover"
               source={{ uri: item.photo }}
             />
@@ -42,20 +84,21 @@ function PostScreen({ navigation, route }) {
 
             <View style={s.wrapper}>
               <TouchableOpacity
-                style={s.comments}
+                style={{ flexDirection: "row" }}
                 onPress={() =>
                   navigation.navigate("Comments", {
                     photo: item.photo,
-                    // post: item.id,
+                    postId: item.id,
+                    authorId: item.userId,
                   })
                 }
               >
                 <Feather name="message-circle" size={24} color="#BDBDBD" />
-                <Text style={s.text}>Длинна массива</Text>
+                <Text style={s.text}>{item.comments?.length}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={s.map}
+                style={{ flexDirection: "row" }}
                 onPress={() =>
                   navigation.navigate("Map", {
                     location: item.place,
@@ -70,7 +113,6 @@ function PostScreen({ navigation, route }) {
                   color="#BDBDBD"
                 />
                 <Text style={{ ...s.text, textDecorationLine: "underline" }}>
-                  {/* {`${item.place[0]} ${item.place[1]}`} */}
                   {`${item.place.city}, ${item.place.country}`}
                 </Text>
               </TouchableOpacity>
@@ -91,6 +133,18 @@ const s = StyleSheet.create({
     borderColor: "#F6F6F6",
     // justifyContent: "center",
   },
+  userAvatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 16,
+    marginRight: 8,
+  },
+  image: {
+    width: "100%",
+    height: 240,
+    borderRadius: 8,
+    marginTop: 32,
+  },
   title: {
     marginTop: 8,
     fontFamily: "Roboto-Bold",
@@ -100,22 +154,18 @@ const s = StyleSheet.create({
   wrapper: {
     flexDirection: "row",
     marginTop: 8,
-    // borderWidth: 1,
-    // borderColor: "red",
     justifyContent: "space-between",
   },
-  comments: {
-    flexDirection: "row",
-    // borderWidth: 1,
-    // borderColor: "blue",
-    // justifyContent: "flex-start",
-  },
+
+  // comments: {
+  //   flexDirection: "row",
+  // },
   // locationIcon: {
   //   position: "absolute",
   //   bottom: -2,
   //   left: -28,
   // },
-  map: { flexDirection: "row" },
+  // map: { flexDirection: "row" },
   place: {},
   text: { marginLeft: 8 },
 });

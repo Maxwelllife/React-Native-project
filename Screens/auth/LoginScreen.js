@@ -1,4 +1,8 @@
 import { StatusBar } from "expo-status-bar";
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { login } from "../../redux/auth/auth-operations";
+
 import {
   StyleSheet,
   Text,
@@ -13,8 +17,6 @@ import {
   ImageBackground,
 } from "react-native";
 
-import { useState, useEffect } from "react";
-
 const initialState = {
   email: "",
   password: "",
@@ -22,11 +24,12 @@ const initialState = {
 
 export default function LoginScreen({ navigation }) {
   const { width } = useWindowDimensions();
-  // console.log("width: ", width);
-  // const [dimensions, setDimensions] = useState(width - 16 * 2);
+
   const [state, setState] = useState(initialState);
   const [isShowKeyboard, setIsShowKeyboard] = useState();
   const [isShowPassword, setIsShowPassword] = useState(true);
+
+  const dispatch = useDispatch();
 
   const showPassword = () => {
     if (isShowPassword) {
@@ -35,27 +38,15 @@ export default function LoginScreen({ navigation }) {
     setIsShowPassword(true);
   };
 
-  // useEffect(() => {
-  //   const onChange = () => {
-  //     const { width } = useWindowDimensions();
-  //     console.log("width:", width);
-  //   };
-  //   Dimensions.addEventListener("change", onChange);
-  //   return () => {
-  //     Dimensions.removeEventListener("change", onChange);
-  //   };
-  // }, []);
-
-  // при скрытии клавы делаем следующее
-  const keyBoardHide = () => {
-    // setIsShowKeyboard(false);
-    Keyboard.dismiss();
-    console.log("login-state", state);
+  const handleSubmit = () => {
+    dispatch(login(state));
     // в стейт записывает начальный пустой
     setState(initialState);
   };
-
-  const onSubmit = () => {};
+  // скрытие клавы
+  const keyboardHide = () => {
+    Keyboard.dismiss();
+  };
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
@@ -70,7 +61,6 @@ export default function LoginScreen({ navigation }) {
     };
   }, []);
 
-  // console.log("isShowKeyboard: ", isShowKeyboard);
   return (
     <View style={s.container}>
       <ImageBackground
@@ -78,8 +68,7 @@ export default function LoginScreen({ navigation }) {
         style={s.bgImage}
       >
         {/* закрытие клавиатуры когда нажимаем вне формы */}
-        <TouchableWithoutFeedback onPress={keyBoardHide}>
-          {/* не работает */}
+        <TouchableWithoutFeedback onPress={keyboardHide}>
           <View
             style={{
               ...s.form,
@@ -130,11 +119,9 @@ export default function LoginScreen({ navigation }) {
               <TouchableOpacity
                 style={s.btn}
                 activeOpacity={0.6}
-                onPress={keyBoardHide}
+                onPress={handleSubmit}
               >
-                <Text onPress={onSubmit} style={s.text}>
-                  Войти
-                </Text>
+                <Text style={s.text}>Войти</Text>
               </TouchableOpacity>
               <View style={{ marginTop: 16, alignItems: "center" }}>
                 <Text onPress={() => navigation.navigate("Register")}>
@@ -144,7 +131,7 @@ export default function LoginScreen({ navigation }) {
             </KeyboardAvoidingView>
           </View>
         </TouchableWithoutFeedback>
-        <StatusBar style="auto" />
+      
       </ImageBackground>
     </View>
   );
@@ -204,7 +191,6 @@ const s = StyleSheet.create({
     padding: 16,
     marginTop: 43,
     borderRadius: 100,
-    // borderWidth: 1,
     ...Platform.select({
       ios: { borderColor: "#E8E8E8", backgroundColor: "#FF6C00" },
       android: { borderColor: "#E8E8E8", backgroundColor: "#FF6C00" },
