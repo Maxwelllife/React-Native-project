@@ -17,14 +17,21 @@ import { getCurrentUser } from "../redux/auth/auth-operations";
 const AuthStack = createStackNavigator();
 
 const MainRouter = () => {
-  const user = useSelector((store) => store.auth.userId);
+  const userId = useSelector((store) => {
+    return store.auth.userId;
+  });
+
   const dispatch = useDispatch();
   const navigationRef = useNavigationContainerRef();
+
   useEffect(() => {
-    dispatch(getCurrentUser());
+    if (userId === null) {
+      dispatch(getCurrentUser());
+    }
+    console.log("USEEFFECT IN MAIN ROUTER");
     // следим за user и передаем в NavigationContainer "ссылку" на Home или Register
-    navigationRef.navigate(user ? "Home" : "Register");
-  }, [user]);
+    navigationRef.navigate(userId ? "Home" : "Register");
+  }, [userId]);
 
   // const [user, setUser] = useState(null);
   // onAuthStateChanged(auth, (user) => setUser(user));

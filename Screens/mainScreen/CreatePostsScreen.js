@@ -10,14 +10,7 @@ import * as Location from "expo-location";
 
 import { storage, db } from "../../firebase/config";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import {
-  arrayRemove,
-  arrayUnion,
-  deleteDoc,
-  doc,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import uuid from "react-native-uuid";
 
 import {
@@ -31,7 +24,7 @@ import {
 } from "react-native";
 
 function CreateScreen({ navigation }) {
-  const { userId, login } = useSelector(getAuthStore);
+  const { userId, login, avatarURL } = useSelector(getAuthStore);
   const [camera, setCamera] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -105,16 +98,13 @@ function CreateScreen({ navigation }) {
     const photoURL = await uploadPhotoToServer();
     // ссылка на коллекцию постов
     const postsStorageRef = doc(db, `posts`, uuid.v4());
-    console.log("postsStorageRef: ", postsStorageRef);
     await setDoc(postsStorageRef, {
       title,
       userId,
       login,
       place,
       photo: photoURL,
-      // likes: [],
-      // comments: [],
-
+      comments: [],
       creationDate: new Date().getTime(),
     });
   };
@@ -213,20 +203,20 @@ function CreateScreen({ navigation }) {
           />
         </View>
       </View>
-      <View
-        style={{
-          ...s.sendContainer,
-          backgroundColor: photo && title ? "#FF6C00" : "#f6f6f6",
-        }}
-      >
-        <TouchableOpacity onPress={sendPhoto}>
+      <TouchableOpacity onPress={sendPhoto}>
+        <View
+          style={{
+            ...s.sendContainer,
+            backgroundColor: photo && title ? "#FF6C00" : "#f6f6f6",
+          }}
+        >
           <Text
             style={{ ...s.text, color: photo && title ? "#FFF" : "#BDBDBD" }}
           >
             Опубликовать
           </Text>
-        </TouchableOpacity>
-      </View>
+        </View>
+      </TouchableOpacity>
       <TouchableOpacity style={s.basket} activeOpacity={0.6} onPress={reset}>
         <MaterialCommunityIcons
           name="trash-can-outline"

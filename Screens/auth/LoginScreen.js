@@ -131,7 +131,7 @@ export default function LoginScreen({ navigation }) {
             </KeyboardAvoidingView>
           </View>
         </TouchableWithoutFeedback>
-        <StatusBar style="auto" />
+      
       </ImageBackground>
     </View>
   );
@@ -191,7 +191,6 @@ const s = StyleSheet.create({
     padding: 16,
     marginTop: 43,
     borderRadius: 100,
-    // borderWidth: 1,
     ...Platform.select({
       ios: { borderColor: "#E8E8E8", backgroundColor: "#FF6C00" },
       android: { borderColor: "#E8E8E8", backgroundColor: "#FF6C00" },

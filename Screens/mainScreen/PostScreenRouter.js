@@ -1,24 +1,13 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { Image, TouchableOpacity, StyleSheet } from "react-native";
 import PostsScreen from "./PostsScreen";
 import CommentsScreen from "../nestedScreens/CommentsScreen";
 import MapScreen from "../nestedScreens/MapScreen";
-import { Feather } from "@expo/vector-icons";
-import { logOut } from "../../redux/auth/auth-operations";
-import { useDispatch } from "react-redux";
-// const navigationRef = useNavigationContainerRef();
-//  useEffect(() => {
-//    navigationRef.navigate(user ? "Home" : "Register");
-//  }, [user]);
+import LogOut from "../../Components/LogOut";
 
 const Stack = createStackNavigator();
 
 function PostScreenRouter({ navigation }) {
-  const dispach = useDispatch();
-  const logOutUser = () => {
-    dispach(logOut());
-  };
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -28,11 +17,7 @@ function PostScreenRouter({ navigation }) {
           title: "Публикации",
           headerTitleAlign: "center",
           headerLeft: null,
-          headerRight: () => (
-            <TouchableOpacity style={s.logOutContainer} onPress={logOutUser}>
-              <Feather name="log-out" size={24} color="black" />
-            </TouchableOpacity>
-          ),
+          headerRight: () => <LogOut />,
         }}
       />
       <Stack.Screen
@@ -81,9 +66,4 @@ function PostScreenRouter({ navigation }) {
   );
 }
 
-const s = StyleSheet.create({
-  logOutContainer: {
-    paddingRight: 16,
-  },
-});
 export default PostScreenRouter;

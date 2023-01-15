@@ -21,9 +21,6 @@ export default function App() {
           "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
           "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
         });
-        // await Asset.fromModule(
-        //   require("./assets/images/png/PhotoBG.png")
-        // ).downloadAsync();
       } catch (e) {
         console.warn(e);
       } finally {
@@ -48,7 +45,6 @@ export default function App() {
       <View onLayout={onLayoutRootView} style={{ height: "100%" }}>
         <MainRouter />
       </View>
-
       <StatusBar style="auto" />
     </Provider>
   );

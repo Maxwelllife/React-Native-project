@@ -1,36 +1,32 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const store = {
+const initialState = {
   userId: null,
   login: null,
-  stateChange: false,
+  email: null,
+  avatarURL: null,
 };
 
 const actions = {
-  updateUserProfile: (store, { payload }) => {
-    console.log("payload: ", payload);
+  updateUserProfile: (state, { payload }) => {
+    // console.log("payload: ", payload);
     return {
-      ...store,
+      ...state,
       userId: payload.userId,
       login: payload.login,
+      email: payload.email,
+      avatarURL: payload.avatarURL,
     };
   },
 
-  authStateChange: (store, { payload }) => {
-    console.log("payload: ", payload);
-    return {
-      ...store,
-      stateChange: payload.stateChange,
-    };
-  },
-  authLogOut: () => store,
+  authLogOut: () => initialState,
 };
 
 export const authSlice = createSlice({
   name: "auth",
-  initialState: store,
+  initialState,
   // в reducers - он же  actions прилетает payload и мы обновляем...
   reducers: actions,
 });
 
-console.log("authSlice: ", authSlice);
+// console.log("authSlice: ", authSlice);

@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-
+import * as ImagePicker from "expo-image-picker";
+import { Entypo } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
+// import { getAvatarFromLibarry } from "../../helpers/getAvatarFromLibarry";
+
 import {
   StyleSheet,
   Text,
@@ -23,12 +26,15 @@ const initialState = {
   login: "",
   email: "",
   password: "",
+  avatarURL: null,
 };
 
 export default function RegisterScreen({ navigation }) {
   const { width } = useWindowDimensions();
   // const [dimensions, setDimensions] = useState(width - 16 * 2);
   const [state, setState] = useState(initialState);
+
+  // const [image, setImage] = useState(null);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(true);
 
@@ -41,18 +47,26 @@ export default function RegisterScreen({ navigation }) {
     setIsShowPassword(true);
   };
 
-  // useEffect(() => {
-  //   const onChange = () => {
-  //     const { width } = useWindowDimensions();
-  //     console.log("width:", width);
-  //   };
-  //   Dimensions.addEventListener("change", onChange);
-  //   return () => {
-  //     Dimensions.removeEventListener("change", onChange);
-  //   };
-  // }, []);
+  const getAvatarFromLibarry = async () => {
+    let file = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.3,
+    });
+    if (!file.canceled) {
+      // setImage(file.assets[0].uri);
+      setState((prevState) => ({
+        ...prevState,
+        avatarURL: file.assets[0].uri,
+      }));
+    }
+  };
 
-  // при скрытии клавы делаем следующее
+  // const resetPhoto = () => {
+  //   setImage(null);
+  // };
+
   const handleSubmit = () => {
     dispatch(register(state));
     // в стейт записывает начальный пустой
@@ -76,7 +90,6 @@ export default function RegisterScreen({ navigation }) {
     };
   }, []);
 
-  // console.log("isShowKeyboard: ", isShowKeyboard);
   return (
     <View style={s.container}>
       <ImageBackground
@@ -94,11 +107,27 @@ export default function RegisterScreen({ navigation }) {
             }}
           >
             <View style={{ ...s.photoContainer, left: (width - 120) / 2 }}>
-              <TouchableOpacity activeOpacity={0.6}>
-                <Image
-                  style={s.addIcon}
-                  source={require("../../assets/images/png/add.png")}
-                />
+              <TouchableOpacity
+                activeOpacity={0.6}
+                onPress={getAvatarFromLibarry}
+              >
+                {state.avatarURL ? (
+                  <Image
+                    style={s.addIcon}
+                    source={require("../../assets/images/png/cross.png")}
+                  />
+                ) : (
+                  <Image
+                    style={s.addIcon}
+                    source={require("../../assets/images/png/add.png")}
+                  />
+                )}
+                {state.avatarURL && (
+                  <Image
+                    source={{ uri: state.avatarURL }}
+                    style={{ width: 120, height: 120, borderRadius: 16 }}
+                  />
+                )}
               </TouchableOpacity>
             </View>
             <View>
@@ -112,7 +141,6 @@ export default function RegisterScreen({ navigation }) {
                   style={s.input}
                   textAlign={"left"}
                   placeholder={"Логин"}
-                  // placeholderTextColor="red"
                   // onFocus={() => setIsShowKeyboard(true)}
                   value={state.login}
                   onChangeText={(value) =>
@@ -169,7 +197,7 @@ export default function RegisterScreen({ navigation }) {
             </KeyboardAvoidingView>
           </View>
         </TouchableWithoutFeedback>
-        <StatusBar style="auto" />
+       
       </ImageBackground>
     </View>
   );
@@ -179,13 +207,10 @@ const s = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#E5E5E5",
-    // alignItems: "center",
-    // justifyContent: "flex-end",
   },
   bgImage: {
     flex: 1,
     resizeMode: "cover",
-    // alignItems: "center",
     justifyContent: "flex-end",
   },
   photoContainer: {
@@ -203,6 +228,7 @@ const s = StyleSheet.create({
     right: -12,
     width: 25,
     height: 25,
+    zIndex: 1,
   },
   title: {
     textAlign: "center",
