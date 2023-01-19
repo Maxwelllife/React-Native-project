@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { addLike } from "./dashboard-operations";
 
 const initialState = {
   posts: [],
@@ -12,30 +13,28 @@ const actions = {
       posts: payload.posts,
     };
   },
-  // getPostsById: (state, { payload }) => {
-  //   console.log("payload: ", payload);
-  //   return {
-  //     ...state,
-  //     posts: payload.posts.filter((post) => post.userId === userId),
-  //   };
-  // },
+
   getComments: (state, { payload }) => {
     return {
       ...state,
       comments: payload.comments,
     };
   },
-  addLikeToStore: (state, { payload }) => {
-    console.log("payload LIKES: ", payload);
-    return {
-      ...state,
-      // comments: payload.comments,
-    };
-  },
 };
 
-export const dashboardSlice = createSlice({
+const dashboardSlice = createSlice({
   name: "dashboard",
   initialState,
   reducers: actions,
+  // добавить лоадер и отображение ошибок
+  extraReducers: (builder) => {
+    builder.addCase(addLike.pending, (store) => {
+      store;
+    });
+    builder.addCase(addLike.fulfilled, (store) => store);
+    builder.addCase(addLike.rejected, (store) => store);
+  },
 });
+
+export const { getPosts } = dashboardSlice.actions;
+export default dashboardSlice;

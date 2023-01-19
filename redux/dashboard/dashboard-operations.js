@@ -1,3 +1,4 @@
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import { db, auth, storage } from "../../firebase/config";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import {
@@ -9,10 +10,8 @@ import {
   collection,
 } from "firebase/firestore";
 import uuid from "react-native-uuid";
-import { dashboardSlice } from "./dashboard-reducer";
+import { getPosts } from "./dashboard-reducer";
 import * as ImagePicker from "expo-image-picker";
-
-const { getPosts, comments } = dashboardSlice.actions;
 
 export const sendPostToServer = async ({
   photo,
@@ -30,15 +29,15 @@ export const sendPostToServer = async ({
   const photoURL = await getDownloadURL(storageRef);
 
   // загрузка поста на сервер
-  const postsStorageRef = doc(db, `posts`, uuid.v4());
+  const postsStorageRef = doc(db, `posts`, id);
   await setDoc(postsStorageRef, {
     title,
     userId,
     login,
     place,
     photo: photoURL,
-    // commentsCounter: 0,
-    likes: 0,
+    commentsCounter: 0,
+    likes: [],
     creationDate: new Date().getTime(),
   });
 };
@@ -47,7 +46,6 @@ export const sendPostToServer = async ({
 const postsStorageRef = collection(db, `posts`);
 
 export const getAllPosts = () => async (dispatch, getState) => {
-  // export const getAllPosts = async () => {
   try {
     onSnapshot(postsStorageRef, (data) => {
       if (data.docs.length) {
@@ -74,23 +72,54 @@ export const getAvatarFromLibarry = async () => {
   return file;
 };
 
-// console.log("auth.currentUser.uid: ", auth.currentUser.uid);
-// сейчас наш userId = auth.currentUser.uid;
-export const addLike = async (props) => {
-  const { userId } = props;
-  console.log("userId: ", userId);
-  // async (dispatch, getState) => {
-  // try {
-  // добавляем лайк и сохраняем в database
-  const currentPostRef = doc(db, `posts/${postId}`);
-  console.log("currentPostRef: ", currentPostRef);
+// // console.log("auth.currentUser.uid: ", auth.currentUser.uid);
+// // сейчас наш userId = auth.currentUser.uid;
+// export const addLike = () => {
+//   async (dispatch, getState) => {
+//     // console.log("userId operations: ", userId);
+//     console.log("first");
+//     try {
+//       // добавляем лайк и сохраняем в database
+//       // const currentPostRef = doc(db, `posts/${postId}`);
+//       // await updateDoc(currentPostRef, {
+//       //   likes: arrayUnion(auth.currentUser.uid),
+//       // });
+//     } catch (error) {
+//       console.log("error.message", error.message);
+//     }
+//     // dispatch(addLikeToStore(userId));
+//   };
+// };
 
-  await updateDoc(currentPostRef, {
-    likes: arrayUnion(auth.currentUser.uid),
-  });
-  // } catch (error) {
-  console.log("error.message", error.message);
-  // }
-  // dispatch(addLikeToStore(userId));
-  // };
-};
+export const addLike = createAsyncThunk(
+  "dashboard/addLike",
+  async (postId, { rejectWithValue }) => {
+    console.log("postId: ", postId);
+
+    try {
+      // добавляем лайк и сохраняем в database
+      const currentPostRef = doc(db, `posts/${postId}`);
+      console.log("auth.currentUser.uid: ", auth.currentUser.uid);
+      await updateDoc(currentPostRef, {
+        likes: arrayUnion(auth.currentUser.uid),
+      });
+    } catch (error) {
+      return rejectWithValue(error.response.data.message || error.message);
+    }
+  }
+);
+
+export const deleteLike = createAsyncThunk(
+  "dashboard/deleteLike",
+  async (postId, { rejectWithValue }) => {
+    try {
+      // удаляем лайк из database
+      const currentPostRef = doc(db, `posts/${postId}`);
+      await updateDoc(currentPostRef, {
+        likes: arrayRemove(auth.currentUser.uid),
+      });
+    } catch (error) {
+      return rejectWithValue(error.response.data.message || error.message);
+    }
+  }
+);

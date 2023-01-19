@@ -15,8 +15,6 @@ const { updateUserProfile, authLogOut } = authSlice.actions;
 export const register =
   ({ login, email, password, avatarURL }) =>
   async (dispatch, getState) => {
-    // const { login, email, password, avatarURL } = state;
-    // console.log("state: ", state);
 
     try {
       const { user } = await createUserWithEmailAndPassword(
@@ -40,8 +38,6 @@ export const register =
         photoURL: avatar,
       });
 
-      console.log("user auth-operations: ", user);
-      // const { uid, displayName, photoURL, email: Email } = user;
       // обновили стор данными (к примеру в photoURL мы уже положили avatar взятый из сервера)
       dispatch(
         updateUserProfile({

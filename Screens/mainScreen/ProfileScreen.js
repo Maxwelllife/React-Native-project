@@ -105,8 +105,7 @@ function ProfileScreen({ navigation }) {
           <SafeAreaView>
             <FlatList
               data={getUserPost()}
-              // тут нужен нормальный const id = uuid.v4();
-              keyExtractor={(item, indx) => indx.toString()}
+              keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <View
                   style={{

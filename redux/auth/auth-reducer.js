@@ -5,7 +5,6 @@ const initialState = {
   login: null,
   email: null,
   avatarURL: null,
-  // commentsCounter: 0,
 };
 
 const actions = {
@@ -29,5 +28,3 @@ export const authSlice = createSlice({
   // в reducers - он же  actions прилетает payload и мы обновляем...
   reducers: actions,
 });
-
-

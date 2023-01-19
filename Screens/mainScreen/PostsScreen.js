@@ -5,10 +5,10 @@ import { getAuthStore } from "../../redux/auth/auth-selectors";
 import {
   getAllPosts,
   addLike,
+  deleteLike,
 } from "../../redux/dashboard/dashboard-operations";
 import { getAllPostsFromStore } from "../../redux/dashboard/dashboard-selector";
 
-// import uuid from "react-native-uuid";
 import {
   StyleSheet,
   View,
@@ -17,14 +17,12 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-// import { db } from "../../firebase/config";
-// import { onSnapshot, collection, doc } from "firebase/firestore";
+
 import { Feather, AntDesign, EvilIcons } from "@expo/vector-icons";
 
 function PostScreen({ navigation }) {
-  // const [likesCounter, setLikesCounter] = useState(1);
-
   const { userId, login, email, avatarURL } = useSelector(getAuthStore);
+  console.log("userId PostScreen: ", userId);
   const { posts } = useSelector(getAllPostsFromStore);
   console.log("posts: ", posts);
 
@@ -34,15 +32,15 @@ function PostScreen({ navigation }) {
     dispatch(getAllPosts());
   }, []);
 
-  // const handleLike = (post) => {
-  //   if (userId === post.userId) return;
-  //   // const isLiked = post.likes.includes(userId);
-  //   if (false) {
-  //     dispatch(deleteLike(post.userId));
-  //   } else {
-  //     dispatch(addLike(post.userId));
-  //   }
-  // };
+  const handleLike = (post) => {
+    if (userId === post.userId) return;
+    const isLiked = post.likes.includes(userId);
+    if (isLiked) {
+      dispatch(deleteLike(post.id));
+    } else {
+      dispatch(addLike(post.id));
+    }
+  };
 
   return (
     <View style={s.container}>
@@ -64,8 +62,7 @@ function PostScreen({ navigation }) {
 
       <FlatList
         data={posts}
-        // тут нужен нормальный const id = uuid.v4();
-        keyExtractor={(item, indx) => indx.toString()}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View
             style={{
@@ -88,6 +85,7 @@ function PostScreen({ navigation }) {
                     photo: item.photo,
                     postId: item.id,
                     authorId: item.userId,
+                    commentsCounter: item.commentsCounter,
                   })
                 }
               >
@@ -100,13 +98,13 @@ function PostScreen({ navigation }) {
               <TouchableOpacity
                 style={s.likes}
                 onPress={() => {
-                  // handleLike(item);
+                  handleLike(item);
                 }}
                 activeOpacity={0.6}
               >
                 <AntDesign name="like2" size={24} color="#BDBDBD" />
                 <Text style={{ ...s.text, marginLeft: 6 }}>
-                  {/* {item.likes.length} */}
+                  {item.likes.length}
                 </Text>
               </TouchableOpacity>
 

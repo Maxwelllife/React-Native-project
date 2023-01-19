@@ -13,22 +13,21 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import { getAuthStore } from "../../redux/auth/auth-selectors";
+import { getAllPostsFromStore } from "../../redux/dashboard/dashboard-selector";
 import { db } from "../../firebase/config";
 import {
   collection,
   doc,
   addDoc,
-  setDoc,
-  arrayUnion,
   updateDoc,
   onSnapshot,
 } from "firebase/firestore";
 import uuid from "react-native-uuid";
 
 const CommentsScreen = ({ route }) => {
-  const { postId, photo, authorId } = route.params;
+  const { postId, photo, authorId, commentsCounter } = route.params;
   const [comment, setComment] = useState("");
-  const [commentsCounter, setCommentsCounter] = useState(1);
+  // const [commentsCounter, setCommentsCounter] = useState(1);
 
   const [allComments, setAllComments] = useState([]);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
@@ -56,11 +55,11 @@ const CommentsScreen = ({ route }) => {
 
   const createComment = async () => {
     const postsStorageRef = doc(db, `posts/${postId}`);
-    console.log("postsStorageRef: ", postsStorageRef);
-    setCommentsCounter(commentsCounter + 1);
+    const test = commentsCounter + 1;
+    // setCommentsCounter(commentsCounter + 1);
     await updateDoc(postsStorageRef, {
       // comments: arrayUnion(comment), для добавления массива коментариев в коллекцию пост
-      commentsCounter,
+      commentsCounter: test,
     });
 
     await addDoc(ref, {
@@ -80,7 +79,6 @@ const CommentsScreen = ({ route }) => {
           ...comment.data(),
           id: comment.id,
         }));
-        console.log("dbComents: ", dbComents);
         setAllComments(dbComents);
       }
     });
@@ -106,8 +104,7 @@ const CommentsScreen = ({ route }) => {
         <FlatList
           style={s.itemsContainer}
           data={allComments}
-          // тут нужен нормальный const id = uuid.v4();
-          keyExtractor={(item, indx) => indx.toString()}
+          keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <View
               style={{
@@ -157,8 +154,6 @@ const s = StyleSheet.create({
     flex: 1,
     marginTop: 32,
     marginHorizontal: 16,
-    // дабы внизу все было
-    // justifyContent: "flex-end",
   },
   itemsContainer: {
     marginTop: 8,
