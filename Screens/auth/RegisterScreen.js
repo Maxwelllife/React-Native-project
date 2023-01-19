@@ -30,13 +30,11 @@ const initialState = {
 };
 
 export default function RegisterScreen({ navigation }) {
-  const { width } = useWindowDimensions();
-  // const [dimensions, setDimensions] = useState(width - 16 * 2);
   const [state, setState] = useState(initialState);
-
-  // const [image, setImage] = useState(null);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(true);
+
+  const { width } = useWindowDimensions();
 
   const dispatch = useDispatch();
 
@@ -54,8 +52,10 @@ export default function RegisterScreen({ navigation }) {
       aspect: [1, 1],
       quality: 0.3,
     });
+    // const test = () => {
+    //   const file = getAvatarFromLibarry();
+
     if (!file.canceled) {
-      // setImage(file.assets[0].uri);
       setState((prevState) => ({
         ...prevState,
         avatarURL: file.assets[0].uri,
@@ -69,7 +69,6 @@ export default function RegisterScreen({ navigation }) {
 
   const handleSubmit = () => {
     dispatch(register(state));
-    // в стейт записывает начальный пустой
     setState(initialState);
   };
 
@@ -197,7 +196,6 @@ export default function RegisterScreen({ navigation }) {
             </KeyboardAvoidingView>
           </View>
         </TouchableWithoutFeedback>
-       
       </ImageBackground>
     </View>
   );

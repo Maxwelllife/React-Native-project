@@ -1,33 +1,41 @@
-// import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
-// const store = {
-//   userId: null,
-//   login: null,
-//   stateChange: false,
-// };
+const initialState = {
+  posts: [],
+};
 
-// const actions = {
-//   updateUserProfile: (store, { payload }) => {
-//     console.log("payload: ", payload);
-//     return {
-//       ...store,
-//       userId: payload.userId,
-//       login: payload.login,
-//     };
-//   },
+const actions = {
+  getPosts: (state, { payload }) => {
+    // console.log("payload: ", payload);
+    return {
+      ...state,
+      posts: payload.posts,
+    };
+  },
+  // getPostsById: (state, { payload }) => {
+  //   console.log("payload: ", payload);
+  //   return {
+  //     ...state,
+  //     posts: payload.posts.filter((post) => post.userId === userId),
+  //   };
+  // },
+  getComments: (state, { payload }) => {
+    return {
+      ...state,
+      comments: payload.comments,
+    };
+  },
+  addLikeToStore: (state, { payload }) => {
+    console.log("payload LIKES: ", payload);
+    return {
+      ...state,
+      // comments: payload.comments,
+    };
+  },
+};
 
-//   authStateChange: (store, { payload }) => {
-//     console.log("payload: ", payload);
-//     return {
-//       ...store,
-//       stateChange: payload.stateChange,
-//     };
-//   },
-//   authLogOut: () => store,
-// };
-
-// export const dashboardSlice = createSlice({
-//   name: "dashboard",
-//   initialState: store,
-//   reducers: actions,
-// });
+export const dashboardSlice = createSlice({
+  name: "dashboard",
+  initialState,
+  reducers: actions,
+});

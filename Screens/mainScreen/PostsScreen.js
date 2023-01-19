@@ -1,50 +1,48 @@
 import React, { useState, useEffect } from "react";
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { getAuthStore } from "../../redux/auth/auth-selectors";
-// import { getUser } from "../../redux/auth/auth-selectors";
+import {
+  getAllPosts,
+  addLike,
+} from "../../redux/dashboard/dashboard-operations";
+import { getAllPostsFromStore } from "../../redux/dashboard/dashboard-selector";
+
 // import uuid from "react-native-uuid";
 import {
   StyleSheet,
   View,
   Image,
-  SafeAreaView,
   FlatList,
   Text,
   TouchableOpacity,
 } from "react-native";
-import { db } from "../../firebase/config";
-import { onSnapshot, collection, doc } from "firebase/firestore";
-
-import { Feather, EvilIcons } from "@expo/vector-icons";
+// import { db } from "../../firebase/config";
+// import { onSnapshot, collection, doc } from "firebase/firestore";
+import { Feather, AntDesign, EvilIcons } from "@expo/vector-icons";
 
 function PostScreen({ navigation }) {
+  // const [likesCounter, setLikesCounter] = useState(1);
+
   const { userId, login, email, avatarURL } = useSelector(getAuthStore);
-  console.log("Store in POSTSCREEN: ", useSelector(getAuthStore));
+  const { posts } = useSelector(getAllPostsFromStore);
+  console.log("posts: ", posts);
 
-  const [posts, setPosts] = useState([]);
-
-  const postsStorageRef = collection(db, `posts`);
-  console.log("db: ", db);
-
-  const getAllPosts = async () => {
-    onSnapshot(postsStorageRef, (data) => {
-      if (data.docs.length) {
-        const dbPosts = data.docs.map((post) => ({
-          ...post.data(),
-          id: post.id,
-        }));
-        // console.log("dbPosts: ", dbPosts);
-        setPosts(dbPosts);
-      }
-    });
-  };
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    getAllPosts();
+    dispatch(getAllPosts());
   }, []);
 
-  console.log("postsssssssssssssssssssssss: ", posts);
+  // const handleLike = (post) => {
+  //   if (userId === post.userId) return;
+  //   // const isLiked = post.likes.includes(userId);
+  //   if (false) {
+  //     dispatch(deleteLike(post.userId));
+  //   } else {
+  //     dispatch(addLike(post.userId));
+  //   }
+  // };
 
   return (
     <View style={s.container}>
@@ -54,7 +52,7 @@ function PostScreen({ navigation }) {
           source={
             avatarURL
               ? { uri: avatarURL }
-              : require("../../assets/images/png/PhotoBG.png")
+              : require("../../assets/images/NoImage.jpg")
           }
         />
 
@@ -94,7 +92,22 @@ function PostScreen({ navigation }) {
                 }
               >
                 <Feather name="message-circle" size={24} color="#BDBDBD" />
-                <Text style={s.text}>{item.comments?.length}</Text>
+                <Text style={{ ...s.text, marginLeft: 6 }}>
+                  {item.commentsCounter}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={s.likes}
+                onPress={() => {
+                  // handleLike(item);
+                }}
+                activeOpacity={0.6}
+              >
+                <AntDesign name="like2" size={24} color="#BDBDBD" />
+                <Text style={{ ...s.text, marginLeft: 6 }}>
+                  {/* {item.likes.length} */}
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -131,7 +144,6 @@ const s = StyleSheet.create({
     paddingTop: 32,
     borderTopWidth: 2,
     borderColor: "#F6F6F6",
-    // justifyContent: "center",
   },
   userAvatar: {
     width: 60,
@@ -152,9 +164,15 @@ const s = StyleSheet.create({
     lineHeight: 19,
   },
   wrapper: {
+    alignItems: "center",
     flexDirection: "row",
     marginTop: 8,
-    justifyContent: "space-between",
+  },
+  likes: {
+    alignItems: "center",
+    flexDirection: "row",
+    marginLeft: 24,
+    marginRight: "auto",
   },
 
   // comments: {

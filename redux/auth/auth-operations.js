@@ -10,7 +10,7 @@ import { authSlice } from "./auth-reducer";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 // деструктурируем actions из authSlice для короткой записи
-const { updateUserProfile, authStateChange, authLogOut } = authSlice.actions;
+const { updateUserProfile, authLogOut } = authSlice.actions;
 
 export const register =
   ({ login, email, password, avatarURL }) =>
@@ -24,18 +24,17 @@ export const register =
         email,
         password
       );
-      console.log("СОЗДАЛИ ЮЗЕРА user: ", user);
+      // console.log("СОЗДАЛИ ЮЗЕРА user: ", user);
       let avatar;
       if (avatarURL) {
         const response = await fetch(avatarURL);
         const file = await response.blob();
         const avatarStorageRef = ref(storage, `avatars/${user.uid}`);
-        console.log("avatarStorageRef: ", avatarStorageRef);
         await uploadBytes(avatarStorageRef, file);
 
         avatar = await getDownloadURL(avatarStorageRef);
       }
-// тут только логин и аватар потомучто при создании уже туда положили емаил и пароль
+      // тут только логин и аватар потомучто при создании уже туда положили емаил и пароль
       await updateProfile(auth.currentUser, {
         displayName: login,
         photoURL: avatar,
@@ -43,14 +42,15 @@ export const register =
 
       console.log("user auth-operations: ", user);
       // const { uid, displayName, photoURL, email: Email } = user;
-      console.log("we are here auth-operations");
       // обновили стор данными (к примеру в photoURL мы уже положили avatar взятый из сервера)
       dispatch(
         updateUserProfile({
           userId: user.uid,
           login,
           email: user.email,
-          avatarURL: user.photoURL,
+          // возможно операция записи в стор сработает быстрее чем запишеться на сервере информация потому в стор возьмем из локальной среды
+          // avatarURL: user.photoURL,
+          avatarURL: avatar,
         })
       );
     } catch (error) {
@@ -86,7 +86,6 @@ export const logOut = () => async (dispatch, getState) => {
 
 export const getCurrentUser = () => (dispatch, getState) => {
   onAuthStateChanged(auth, (user) => {
-    console.log("user getCurrentUser: ", user);
     if (!user) return;
 
     // dispatch(authStateChange({ stateChange: true }));

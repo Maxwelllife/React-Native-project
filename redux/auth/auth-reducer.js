@@ -5,6 +5,7 @@ const initialState = {
   login: null,
   email: null,
   avatarURL: null,
+  // commentsCounter: 0,
 };
 
 const actions = {
@@ -29,4 +30,4 @@ export const authSlice = createSlice({
   reducers: actions,
 });
 
-// console.log("authSlice: ", authSlice);
+

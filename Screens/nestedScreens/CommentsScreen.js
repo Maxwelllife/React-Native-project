@@ -6,7 +6,6 @@ import {
   TextInput,
   TouchableOpacity,
   FlatList,
-  SafeAreaView,
   Image,
   KeyboardAvoidingView,
   Keyboard,
@@ -29,6 +28,8 @@ import uuid from "react-native-uuid";
 const CommentsScreen = ({ route }) => {
   const { postId, photo, authorId } = route.params;
   const [comment, setComment] = useState("");
+  const [commentsCounter, setCommentsCounter] = useState(1);
+
   const [allComments, setAllComments] = useState([]);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
@@ -55,9 +56,11 @@ const CommentsScreen = ({ route }) => {
 
   const createComment = async () => {
     const postsStorageRef = doc(db, `posts/${postId}`);
-
+    console.log("postsStorageRef: ", postsStorageRef);
+    setCommentsCounter(commentsCounter + 1);
     await updateDoc(postsStorageRef, {
-      comments: arrayUnion(comment),
+      // comments: arrayUnion(comment), для добавления массива коментариев в коллекцию пост
+      commentsCounter,
     });
 
     await addDoc(ref, {
@@ -117,7 +120,7 @@ const CommentsScreen = ({ route }) => {
                 source={
                   item.authorAvatar
                     ? { uri: item.authorAvatar }
-                    : require("../../assets/images/png/PhotoBG.png")
+                    : require("../../assets/images/NoImage.jpg")
                 }
                 style={s.avatar}
               />

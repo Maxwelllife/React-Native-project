@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { getAuthStore } from "../../redux/auth/auth-selectors";
+import { getAllPostsFromStore } from "../../redux/dashboard/dashboard-selector";
+// import { getPostsById } from "../../redux/dashboard/dashboard-operations";
 import * as ImagePicker from "expo-image-picker";
 import { db } from "../../firebase/config";
 import { onSnapshot, collection } from "firebase/firestore";
@@ -20,32 +22,39 @@ import {
 
 function ProfileScreen({ navigation }) {
   const { login, userId, avatarURL } = useSelector(getAuthStore);
+  const { posts } = useSelector(getAllPostsFromStore);
+  // const dispatch = useDispatch();
   const { width } = useWindowDimensions();
 
   //нужна возможность положить фотку в стор и на сервер (не забыть за правильный формат 64)
   const [state, setState] = useState();
 
-  const [posts, setPosts] = useState([]);
-  const postsStorageRef = collection(db, `posts`);
+  // const [posts, setPosts] = useState([]);
+  // const postsStorageRef = collection(db, `posts`);
 
-  const getAllPostsById = async () => {
-    onSnapshot(postsStorageRef, (data) => {
-      if (data.docs.length) {
-        const dbPosts = data.docs.map((post) => ({
-          ...post.data(),
-          id: post.id,
-        }));
-        console.log("dbPosts: ", dbPosts);
-        const posts = dbPosts.filter((post) => post.userId === userId);
-        console.log("posts: ", posts);
-        setPosts(posts);
-      }
-    });
+  const getUserPost = () => {
+    return posts.filter((post) => post.userId === userId);
+    // .sort((a, b) => b.creationDate - a.creationDate);
   };
 
-  useEffect(() => {
-    getAllPostsById();
-  }, []);
+  // const getAllPostsById = async () => {
+  //   onSnapshot(postsStorageRef, (data) => {
+  //     if (data.docs.length) {
+  //       const dbPosts = data.docs.map((post) => ({
+  //         ...post.data(),
+  //         id: post.id,
+  //       }));
+  //       console.log("dbPosts: ", dbPosts);
+  //       const posts = dbPosts.filter((post) => post.userId === userId);
+  //       console.log("posts: ", posts);
+  //       setPosts(posts);
+  //     }
+  //   });
+  // };
+
+  // useEffect(() => {
+  //   getUserPost();
+  // }, []);
 
   const getAvatarFromLibarry = async () => {
     let file = await ImagePicker.launchImageLibraryAsync({
@@ -83,7 +92,7 @@ function ProfileScreen({ navigation }) {
                 source={
                   avatarURL
                     ? { uri: avatarURL }
-                    : require("../../assets/images/png/PhotoBG.png")
+                    : require("../../assets/images/NoImage.jpg")
                 }
                 style={{ width: 120, height: 120, borderRadius: 16 }}
               />
@@ -95,7 +104,7 @@ function ProfileScreen({ navigation }) {
           </View>
           <SafeAreaView>
             <FlatList
-              data={posts}
+              data={getUserPost()}
               // тут нужен нормальный const id = uuid.v4();
               keyExtractor={(item, indx) => indx.toString()}
               renderItem={({ item }) => (
@@ -130,7 +139,7 @@ function ProfileScreen({ navigation }) {
                       />
 
                       <Text style={{ ...s.text, marginLeft: 6 }}>
-                        {item.comments?.length}
+                        {item.counter}
                       </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -145,7 +154,7 @@ function ProfileScreen({ navigation }) {
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                      style={s.map}
+                      style={{ flexDirection: "row" }}
                       onPress={() =>
                         navigation.navigate("Map", {
                           location: item.place,
@@ -233,7 +242,6 @@ const s = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     marginTop: 8,
-    // justifyContent: "space-between",
   },
   likes: {
     alignItems: "center",
@@ -241,8 +249,6 @@ const s = StyleSheet.create({
     marginLeft: 24,
     marginRight: "auto",
   },
-
-  map: { flexDirection: "row" },
 });
 
 export default ProfileScreen;
