@@ -37,7 +37,6 @@ function ProfileScreen({ navigation }) {
     // .sort((a, b) => b.creationDate - a.creationDate);
   };
 
-
   const getAvatarFromLibarry = async () => {
     let file = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -120,7 +119,7 @@ function ProfileScreen({ navigation }) {
                       />
 
                       <Text style={{ ...s.text, marginLeft: 6 }}>
-                        {item.counter}
+                        {item.commentsCounter}
                       </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -130,7 +129,7 @@ function ProfileScreen({ navigation }) {
                     >
                       <AntDesign name="like2" size={24} color="#FF6C00" />
                       <Text style={{ ...s.text, marginLeft: 6 }}>
-                        likes.length
+                        {item.likes.length}
                       </Text>
                     </TouchableOpacity>
 
@@ -233,4 +232,3 @@ const s = StyleSheet.create({
 });
 
 export default ProfileScreen;
-

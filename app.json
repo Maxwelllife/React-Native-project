@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Moment saver",
-    "slug": "momentsaver",
+    "slug": "moment-saver",
     "privacy": "public",
     "version": "1.0.0",
     "orientation": "default",
@@ -14,11 +14,9 @@
     },
     "updates": {
       "fallbackToCacheTimeout": 0,
-      "url": "https://u.expo.dev/79482c58-2860-4103-88f3-85ced0dd98f4"
+      "url": "https://u.expo.dev/23b0bcca-f497-4d54-a9d7-4ba8c196f758"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -34,11 +32,12 @@
     },
     "extra": {
       "eas": {
-        "projectId": "79482c58-2860-4103-88f3-85ced0dd98f4"
+        "projectId": "23b0bcca-f497-4d54-a9d7-4ba8c196f758"
       }
     },
     "runtimeVersion": {
-      "policy": "appVersion"
-    }
+      "policy": "sdkVersion"
+    },
+    "owner": "maksym_pokulytyi"
   }
 }

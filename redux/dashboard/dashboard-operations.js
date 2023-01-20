@@ -7,6 +7,7 @@ import {
   updateDoc,
   onSnapshot,
   arrayUnion,
+  arrayRemove,
   collection,
 } from "firebase/firestore";
 import uuid from "react-native-uuid";
