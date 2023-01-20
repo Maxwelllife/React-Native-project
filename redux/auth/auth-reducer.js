@@ -9,7 +9,7 @@ const initialState = {
 
 const actions = {
   updateUserProfile: (state, { payload }) => {
-    // console.log("payload: ", payload);
+
     return {
       ...state,
       userId: payload.userId,

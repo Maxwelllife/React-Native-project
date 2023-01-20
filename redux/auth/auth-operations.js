@@ -15,14 +15,13 @@ const { updateUserProfile, authLogOut } = authSlice.actions;
 export const register =
   ({ login, email, password, avatarURL }) =>
   async (dispatch, getState) => {
-
     try {
       const { user } = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-      // console.log("СОЗДАЛИ ЮЗЕРА user: ", user);
+
       let avatar;
       if (avatarURL) {
         const response = await fetch(avatarURL);

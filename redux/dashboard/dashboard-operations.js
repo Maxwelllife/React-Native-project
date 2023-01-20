@@ -53,7 +53,7 @@ export const getAllPosts = () => async (dispatch, getState) => {
           ...post.data(),
           id: post.id,
         }));
-        // console.log("posts: ", posts);
+
         dispatch(getPosts({ posts }));
       }
     });
@@ -72,34 +72,12 @@ export const getAvatarFromLibarry = async () => {
   return file;
 };
 
-// // console.log("auth.currentUser.uid: ", auth.currentUser.uid);
-// // сейчас наш userId = auth.currentUser.uid;
-// export const addLike = () => {
-//   async (dispatch, getState) => {
-//     // console.log("userId operations: ", userId);
-//     console.log("first");
-//     try {
-//       // добавляем лайк и сохраняем в database
-//       // const currentPostRef = doc(db, `posts/${postId}`);
-//       // await updateDoc(currentPostRef, {
-//       //   likes: arrayUnion(auth.currentUser.uid),
-//       // });
-//     } catch (error) {
-//       console.log("error.message", error.message);
-//     }
-//     // dispatch(addLikeToStore(userId));
-//   };
-// };
-
 export const addLike = createAsyncThunk(
   "dashboard/addLike",
   async (postId, { rejectWithValue }) => {
-    console.log("postId: ", postId);
-
     try {
       // добавляем лайк и сохраняем в database
       const currentPostRef = doc(db, `posts/${postId}`);
-      console.log("auth.currentUser.uid: ", auth.currentUser.uid);
       await updateDoc(currentPostRef, {
         likes: arrayUnion(auth.currentUser.uid),
       });

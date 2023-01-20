@@ -22,9 +22,9 @@ import { Feather, AntDesign, EvilIcons } from "@expo/vector-icons";
 
 function PostScreen({ navigation }) {
   const { userId, login, email, avatarURL } = useSelector(getAuthStore);
-  console.log("userId PostScreen: ", userId);
+
   const { posts } = useSelector(getAllPostsFromStore);
-  console.log("posts: ", posts);
+
 
   const dispatch = useDispatch();
 

@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "React-Native-project",
-    "slug": "React-Native-project",
+    "name": "Moment saver",
+    "slug": "momentsaver",
+    "privacy": "public",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon1.png",
@@ -12,7 +13,8 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/79482c58-2860-4103-88f3-85ced0dd98f4"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -32,8 +34,11 @@
     },
     "extra": {
       "eas": {
-        "projectId": "3da9fdd2-0dc8-49c6-a7fc-296d9756e391"
+        "projectId": "79482c58-2860-4103-88f3-85ced0dd98f4"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }

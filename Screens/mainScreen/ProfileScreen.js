@@ -37,24 +37,6 @@ function ProfileScreen({ navigation }) {
     // .sort((a, b) => b.creationDate - a.creationDate);
   };
 
-  // const getAllPostsById = async () => {
-  //   onSnapshot(postsStorageRef, (data) => {
-  //     if (data.docs.length) {
-  //       const dbPosts = data.docs.map((post) => ({
-  //         ...post.data(),
-  //         id: post.id,
-  //       }));
-  //       console.log("dbPosts: ", dbPosts);
-  //       const posts = dbPosts.filter((post) => post.userId === userId);
-  //       console.log("posts: ", posts);
-  //       setPosts(posts);
-  //     }
-  //   });
-  // };
-
-  // useEffect(() => {
-  //   getUserPost();
-  // }, []);
 
   const getAvatarFromLibarry = async () => {
     let file = await ImagePicker.launchImageLibraryAsync({
@@ -252,17 +234,3 @@ const s = StyleSheet.create({
 
 export default ProfileScreen;
 
-// const response = await fetch(avatarURL);
-// const file = await response.blob();
-
-// const avatarStorageRef = ref(storage, `avatars/${user.uid}`);
-// await uploadBytes(avatarStorageRef, file).then((snapshot) => {
-//   console.log("Uploaded a blob avatar!");
-// });
-// const avatar = await getDownloadURL(avatarStorageRef);
-// console.log("avatar: ", avatar);
-
-// await updateProfile(auth.currentUser, {
-
-//   photoURL: avatar,
-// });
