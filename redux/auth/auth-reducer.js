@@ -7,7 +7,7 @@ const initialState = {
 };
 const actions = {
     updateUserProfile: (state, { payload }) => {
-        console.log("payload: ", payload);
+        // console.log("payload: ", payload);
         return {
             ...state,
             userId: payload.userId,
@@ -25,4 +25,5 @@ const authSlice = createSlice({
     reducers: actions,
 });
 export const { updateUserProfile, authLogOut } = authSlice.actions;
+
 export default authSlice.reducer;

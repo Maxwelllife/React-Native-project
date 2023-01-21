@@ -6,11 +6,8 @@ import {
     onAuthStateChanged,
     signOut,
 } from "firebase/auth";
-import { authSlice } from "./auth-reducer";
+import { updateUserProfile, authLogOut } from "./auth-reducer";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-
-// деструктурируем actions из authSlice для короткой записи
-const { updateUserProfile, authLogOut } = authSlice.actions;
 
 export const register =
     ({ login, email, password, avatarURL }) =>

@@ -15,6 +15,5 @@ const dashboardSlice = createSlice({
     initialState,
     reducers: actions,
 });
-
-// export const { getPosts } = dashboardSlice.actions;
+export const { getPosts } = dashboardSlice.actions;
 export default dashboardSlice.reducer;
