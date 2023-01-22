@@ -1,43 +1,34 @@
 {
-  "expo": {
-    "name": "Moment saver",
-    "slug": "moment-saver",
-    "privacy": "public",
-    "version": "1.0.0",
-    "orientation": "default",
-    "icon": "./assets/icon1.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0,
-      "url": "https://u.expo.dev/23b0bcca-f497-4d54-a9d7-4ba8c196f758"
-    },
-    "assetBundlePatterns": ["**/*"],
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon1.png",
-        "backgroundColor": "#FFFFFF"
-      },
-      "package": "com.maksym_pokulytyi.ReactNativeproject"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "23b0bcca-f497-4d54-a9d7-4ba8c196f758"
-      }
-    },
-    "runtimeVersion": {
-      "policy": "sdkVersion"
-    },
-    "owner": "maksym_pokulytyi"
-  }
+    "expo": {
+        "name": "Moment saver",
+        "slug": "react-native-project",
+        "privacy": "public",
+        "description": "new instagram",
+        "version": "1.0.0",
+        "orientation": "default",
+        "icon": "./assets/icon1.png",
+        "userInterfaceStyle": "light",
+        "splash": {
+            "image": "./assets/splash.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff"
+        },
+        "updates": {
+            "fallbackToCacheTimeout": 0
+        },
+        "assetBundlePatterns": ["**/*"],
+        "ios": {
+            "supportsTablet": true
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/adaptive-icon1.png",
+                "backgroundColor": "#FFFFFF"
+            },
+            "package": "com.maksym_pokulytyi.ReactNativeproject"
+        },
+        "web": {
+            "favicon": "./assets/favicon.png"
+        }
+    }
 }
